@@ -59,3 +59,43 @@ While writing (`DBImpl::Write()`):
 
 
 ## Read
+
+Read data using the `DBImpl::Get(const ReadOptions& options, const Slice& key, std::string* value)` interface.
+
+A snapshot need to be determined when calling the Get() method. If `snapshot` is not set in `options` (`options.snapshot == nullptr`), the last sequence number will be used as snapshot.
+
+Firstly the required key and snapshot (sequence number) are combined (i.e. sequence number and kValueType are packed, see `dbformat.cc` ) to form a `LookupKey` object `lkey`. 
+
+the searches are according to `lkey` and data entries that with a sequence number newer than required sequence number will be skipped.
+
+
+```C++
+// ...
+  MemTable* mem = mem_;
+  MemTable* imm = imm_;
+  Version* current = versions_->current();
+  mem->Ref();
+  if (imm != nullptr) imm->Ref();
+  current->Ref();
+// ...
+  {
+    mutex_.Unlock();
+    // First look in the memtable, then in the immutable memtable (if any).
+    LookupKey lkey(key, snapshot);
+    if (mem->Get(lkey, value, &s)) {
+      // Done
+    } else if (imm != nullptr && imm->Get(lkey, value, &s)) {
+      // Done
+    } else {
+      s = current->Get(options, lkey, value, &stats);
+      have_stat_update = true;
+    }
+    mutex_.Lock();
+  }
+// ...
+```
+
+1. Search in MemTable,
+2. Search in Immutable MemTable,
+3. Search in SSTables from Level 0 to Level n by `Version::Get(const ReadOptions& options, const LookupKey& k, std::string* value, GetStats* stats)`.
+4. Save the value into `value`. If not found, return `NotFound.
