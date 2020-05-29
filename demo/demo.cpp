@@ -4,6 +4,9 @@
 #include <sstream>
 #include <string>
 
+#include <cstdlib>
+#include <ctime>
+
 #include <cassert>
 #include "leveldb/db.h"
 #include "leveldb/write_batch.h"
@@ -12,6 +15,8 @@ using namespace std;
 
 int main()
 {
+    srand(time(NULL));
+
     leveldb::DB *db;
     leveldb::Options options;
     options.create_if_missing = true;
@@ -22,14 +27,15 @@ int main()
     if (!status.ok())
         cerr << status.ToString() << endl;
 
+    // Put
     leveldb::WriteOptions writeOptions;
     for (unsigned int i = 0; i < 100; ++i)
     {
         ostringstream keyStream;
-        keyStream << setfill('0') << setw(5) << i;
+        keyStream << i;
 
         ostringstream valueStream;
-        valueStream << "value: " << i;
+        valueStream << rand();
 
         db->Put(writeOptions, keyStream.str(), valueStream.str());
     }
@@ -40,6 +46,17 @@ int main()
     for (it->SeekToFirst(); it->Valid(); it->Next())
     {
         cout << it->key().ToString() << " : " << it->value().ToString() << endl;
+    }
+
+    // Get
+    string value;
+    string key1 = "5";
+
+    leveldb::Status s = db->Get(leveldb::ReadOptions(), key1, &value);
+
+    if (s.ok()){
+        cout << "Required Key: " << key1 << ", ";
+        cout << "Retrieved value: " << value << endl;
     }
 
     delete it;
