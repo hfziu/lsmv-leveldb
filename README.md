@@ -10,7 +10,7 @@ This is repository includes code analysis documents for [google/leveldb](https:/
 
 [C++ demos](demo/) for making use of leveldb library.
 
-#### [Classes](Classes.md)
+#### [Data Structures](DS.md)
 
 This part includes class definitions used by the following contents.
 
