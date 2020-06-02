@@ -12,11 +12,33 @@ A single key or data value, is of datatype `Slice` declared in `include/leveldb/
 
 ## Write
 
+### Create batch
+
 A write operation (a `Put()` or a `Delete()`) first write data to log file and then write to in-memory table. To make use of Atomical operations, user can create `WriteBatch` objects to do batch writing.
 
-Even we insert single key-values by calling `DB::Put()` or `DB::Delete()`, each `Put/Delete` operation from `DB()` is creating a batch and then perform batch writing by `Writebatch::Put()`.
+Even we insert single key-values by calling `DB::Put()` or `DB::Delete()`, each `Put/Delete` operation from `DB()` is creating a batch and then perform batch writing by `Writebatch::Put()` as follows:
 
-A `Writebatch` object is a list of data entries, it contains a member named `rep_` which is defined as follows:
+```C++
+// db_impl.cc
+Status DB::Put(const WriteOptions& opt, const Slice& key, const Slice& value) {
+  WriteBatch batch;
+  batch.Put(key, value);
+  return Write(opt, &batch);
+}
+```
+
+where `batch.Put(key, value)` is implemented as:
+```C++
+// write_batch.cc
+void WriteBatch::Put(const Slice& key, const Slice& value) {
+  WriteBatchInternal::SetCount(this, WriteBatchInternal::Count(this) + 1);
+  rep_.push_back(static_cast<char>(kTypeValue));
+  PutLengthPrefixedSlice(&rep_, key);
+  PutLengthPrefixedSlice(&rep_, value);
+}
+```
+
+Where the main data structure of a `Writebatch` object, which contains **a list a data entries**, is a C++ string named `rep_`, with predefined format. The format of `rep_` string is defined in the header of `write_batch.cc`:
 
 ```C++
 // write_batch.cc
@@ -33,7 +55,7 @@ A `Writebatch` object is a list of data entries, it contains a member named `rep
 //    data: uint8[len]
 ```
 
-where `rep_` is a C++ string with fixed format as described above, and `kTypeValue` and `kTypeDeletion` are defined as 
+where `kTypeValue` and `kTypeDeletion` are defined as 
 ```
 enum ValueType { kTypeDeletion = 0x0, kTypeValue = 0x1 };
 ```
@@ -46,6 +68,45 @@ i.e., a write batch contains a header and a list of records, where each record c
 - Key
 - Value length (when `kTypeValue`)
 - Value (when `kTypeValue`)
+
+As the implementation of `batch.Put(key, value)` shown above, the method uses 3 statement to add a key-value to a batch:
+
+```C++
+//write_batch.cc
+rep_.push_back(static_cast<char>(kTypeValue));
+PutLengthPrefixedSlice(&rep_, key);
+PutLengthPrefixedSlice(&rep_, value);
+```
+
+Firstly using a `std::string::push_back` function to append one character `static_cast<char>(kTypeValue)` to the original `rep_` string, indicating the type of this operation, i.e. `kTypeValue` for adding key-value and `kTypeDeletion` for deletion.
+
+Next call `PutLengthPrefixedSlice(&rep_, key)` to append two fields `key size | key` to the `rep_` string. Then call this function again and append `value size | value` to `rep_` string, completing a data insertion to a batch.
+
+The function `PutLengthPrefixedSlice(&rep_, key)` is implemented in `coding.cc`
+
+```C++
+// coding.cc
+// ...
+void PutVarint32(std::string* dst, uint32_t v) {
+  char buf[5];
+  char* ptr = EncodeVarint32(buf, v);
+  dst->append(buf, ptr - buf);
+}
+// ...
+void PutLengthPrefixedSlice(std::string* dst, const Slice& value) {
+  PutVarint32(dst, value.size());
+  dst->append(value.data(), value.size());
+}
+// ...
+```
+
+A deletion in a batch procedure (`Deletion()`) is very similar to insertion (`Put()`), except that we do not append a value to `sep_` but only the key after a `kTypeDeletion` indicator. The calling stack / chain is like:
+
+```
+DB::Delete(options, key) -> WriteBatch::Delete(const Slice& key)
+```
+
+### Write to MemTable
 
 After creating the batch object, data will be write to the MemTable by calling `DBImpl::Write()`.
 
