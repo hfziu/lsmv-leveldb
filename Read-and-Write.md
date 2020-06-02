@@ -27,7 +27,7 @@ Status DB::Put(const WriteOptions& opt, const Slice& key, const Slice& value) {
 }
 ```
 
-where `batch.Put(key, value)` is implemented as:
+where `batch.Put(key, value)` is implemented in [`write_batch.cc`](https://github.com/google/leveldb/blob/master/db/write_batch.cc#L98) as:
 ```C++
 // write_batch.cc
 void WriteBatch::Put(const Slice& key, const Slice& value) {
@@ -82,7 +82,7 @@ Firstly using a `std::string::push_back` function to append one character `stati
 
 Next call `PutLengthPrefixedSlice(&rep_, key)` to append two fields `key size | key` to the `rep_` string. Then call this function again and append `value size | value` to `rep_` string, completing a data insertion to a batch.
 
-The function `PutLengthPrefixedSlice(&rep_, key)` is implemented in `coding.cc`
+The function `PutLengthPrefixedSlice(&rep_, key)` is implemented in [`coding.cc`](https://github.com/google/leveldb/blob/master/util/coding.cc#L72)
 
 ```C++
 // coding.cc
