@@ -41,7 +41,7 @@ virtual void GetApproximateSizes (const Range *range, int n, uint64_t *sizes);
 virtual void CompactRange (const Slice *begin, const Slice *end);
 ```
 
-#### 4. Implementation of in-memory table (~ Week 2, June 2020)
+#### 4. [Implementation of in-memory table](MemTable.md) (~ Week 2, June 2020)
 
 At present, the [in-memory table](https://github.com/google/leveldb/blob/master/db/memtable.h) of LevelDB is implemented as a [skip-list](https://github.com/google/leveldb/blob/master/db/skiplist.h). In this part I will look into the implementation of the skip-list.
 
