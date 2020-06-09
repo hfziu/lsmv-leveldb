@@ -34,3 +34,7 @@
 */*.dSYM/
 */test_db/
 understand/
+
+# JetBrains IDEs
+*/.idea/
+*/build/
