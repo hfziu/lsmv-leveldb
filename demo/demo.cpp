@@ -13,53 +13,51 @@
 
 using namespace std;
 
-int main()
-{
-    srand(time(NULL));
+int main(int argc, char **argv) {
+  auto time_ui = static_cast<unsigned int>( time(nullptr));
+  srand(time_ui);
 
-    leveldb::DB *db;
-    leveldb::Options options;
-    options.create_if_missing = true;
-    // options.error_if_exists = true;
-    leveldb::Status status = leveldb::DB::Open(options, "test_db", &db);
-    assert(status.ok());
+  leveldb::DB *db;
+  leveldb::Options options;
+  options.create_if_missing = true;
+  // options.error_if_exists = true;
+  leveldb::Status status = leveldb::DB::Open(options, "test_db", &db);
+  assert(status.ok());
 
-    if (!status.ok())
-        cerr << status.ToString() << endl;
+  if (!status.ok())
+    cerr << status.ToString() << endl;
 
-    // Put
-    leveldb::WriteOptions writeOptions;
-    for (unsigned int i = 0; i < 100; ++i)
-    {
-        ostringstream keyStream;
-        keyStream << i;
+  // Put
+  leveldb::WriteOptions writeOptions;
+  for (unsigned int i = 0; i < 100; ++i) {
+    ostringstream keyStream;
+    keyStream << i;
 
-        ostringstream valueStream;
-        valueStream << rand();
+    ostringstream valueStream;
+    valueStream << rand();
 
-        db->Put(writeOptions, keyStream.str(), valueStream.str());
-    }
+    db->Put(writeOptions, keyStream.str(), valueStream.str());
+  }
 
-    // Iterator
-    leveldb::Iterator *it = db->NewIterator(leveldb::ReadOptions());
+  // Iterator
+  leveldb::Iterator *it = db->NewIterator(leveldb::ReadOptions());
 
-    for (it->SeekToFirst(); it->Valid(); it->Next())
-    {
-        cout << it->key().ToString() << " : " << it->value().ToString() << endl;
-    }
+  for (it->SeekToFirst(); it->Valid(); it->Next()) {
+    cout << it->key().ToString() << " : " << it->value().ToString() << endl;
+  }
 
-    // Get
-    string value;
-    string key1 = "5";
+  // Get
+  string value;
+  string key1 = "5";
 
-    leveldb::Status s = db->Get(leveldb::ReadOptions(), key1, &value);
+  leveldb::Status s = db->Get(leveldb::ReadOptions(), key1, &value);
 
-    if (s.ok()){
-        cout << "Required Key: " << key1 << ", ";
-        cout << "Retrieved value: " << value << endl;
-    }
+  if (s.ok()) {
+    cout << "Required Key: " << key1 << ", ";
+    cout << "Retrieved value: " << value << endl;
+  }
 
-    delete it;
+  delete it;
 
-    delete db;
+  delete db;
 }
