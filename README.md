@@ -1,6 +1,8 @@
 # LevelDB code analysis
 
-This is repository includes code analysis documents for [google/leveldb](https://github.com/google/leveldb).
+This is repository contains code analysis documents for [google/leveldb](https://github.com/google/leveldb).
+
+[![Build Status](https://api.travis-ci.com/essethon/learn-leveldb.svg?branch=master)](https://travis-ci.com/github/essethon/learn-leveldb)
 
 ## Table of Contents and Schedule
 
