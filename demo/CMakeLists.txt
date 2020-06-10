@@ -8,6 +8,11 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
+include(CheckLibraryExists)
+check_library_exists(crc32c crc32c_value "" HAVE_CRC32C)
+check_library_exists(snappy snappy_compress "" HAVE_SNAPPY)
+check_library_exists(tcmalloc malloc "" HAVE_TCMALLOC)
+
 set(LEVELDB_PATH "${PROJECT_SOURCE_DIR}/../leveldb")
 set(LIBLEVELDB "${LEVELDB_PATH}/build/libleveldb.a")
 
@@ -32,6 +37,19 @@ add_executable(demo)
 target_sources(demo PRIVATE
   demo.cpp)
 target_link_libraries(demo ${LIBLEVELDB})
+if(HAVE_CRC32C)
+  target_link_libraries(demo crc32c)
+endif(HAVE_CRC32C)
+if(HAVE_SNAPPY)
+  target_link_libraries(demo snappy)
+endif(HAVE_SNAPPY)
+if(HAVE_TCMALLOC)
+  target_link_libraries(demo tcmalloc)
+endif(HAVE_TCMALLOC)
+
+# Needed by port_stdcxx.h
+find_package(Threads REQUIRED)
+target_link_libraries(demo Threads::Threads)
 
 # Echo variables
 message(STATUS "Leveldb path - ${LEVELDB_PATH}")
