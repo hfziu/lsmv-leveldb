@@ -92,7 +92,7 @@ script:
 
 # Build demo
 - mkdir -p demo/build && cd demo/build
-- cmake .. -G Ninja
+- cmake ..
 - cmake --build .
 - ./bin/demo
 - cd ../..
