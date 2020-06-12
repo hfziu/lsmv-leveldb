@@ -118,6 +118,12 @@ While writing (`DBImpl::Write()`):
 3. Add to log and apply to memtable
 4. Release the lock
 
+### Call chain
+
+As inserting a data entry into the database (in [demo.cpp](demo/demo.cpp#L39)), we step in the `Put()` function and trace the calling:
+
+Fig. [calling chain.](figs/put_entry.pdf)
+
 
 ## Read
 
