@@ -28,7 +28,8 @@ private:
 
 where `Table` is an implementation of Skiplist. `MemTable::Add()` will be called when a write operation occurs:
 
-
 `DBImpl::Write()` -> `WriteBatchInternal::InsertInto(write_batch, mem_)`, This function creates a `MemTableInserter inserter` -> Iterate over the batch by `WriteBatch::Iterate(&inserter)`, calling `inserter.Put()` every iteration -> `inserter.Put()` calls `MemTable::Add()`
+
+For main operations on MemTable, refer to [Read-and-Write](Read-and-Write.md).
 
 ## Skip-List
