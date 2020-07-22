@@ -4,7 +4,7 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceFolder}/**",
-                "~/dev/leveldb/include"
+                "~/dev/leveldb-doc/leveldb/include"
             ],
             "defines": [],
             "macFrameworkPath": [
@@ -13,7 +13,9 @@
             "compilerPath": "/usr/bin/clang",
             "cStandard": "c11",
             "cppStandard": "c++11",
-            "intelliSenseMode": "clang-x64"
+            "intelliSenseMode": "clang-x64",
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
+            "configurationProvider": "ms-vscode.cmake-tools"
         }
     ],
     "version": 4

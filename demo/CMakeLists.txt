@@ -33,11 +33,14 @@ else (EXISTS ${LIBLEVELDB})
     )
 endif ()
 
-include_directories(${HEADER_LEVELDB})
+include_directories(
+  ${HEADER_LEVELDB}
+  "."
+)
 
 add_executable(demo)
 target_sources(demo PRIVATE
-  demo.cpp)
+  demo.cc)
 target_link_libraries(demo ${LIBLEVELDB})
 if(HAVE_CRC32C)
   target_link_libraries(demo crc32c)
@@ -52,6 +55,11 @@ endif(HAVE_TCMALLOC)
 # Needed by port_stdcxx.h
 find_package(Threads REQUIRED)
 target_link_libraries(demo Threads::Threads)
+
+# Coding
+add_executable(coding_demo)
+target_sources(coding_demo PRIVATE
+  coding_demo.cc)
 
 # Echo variables
 message(STATUS "Leveldb path - ${LEVELDB_PATH}")
