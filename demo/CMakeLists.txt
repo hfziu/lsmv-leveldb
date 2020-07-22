@@ -57,9 +57,9 @@ find_package(Threads REQUIRED)
 target_link_libraries(demo Threads::Threads)
 
 # Coding
-add_executable(coding_demo)
-target_sources(coding_demo PRIVATE
-  coding_demo.cc)
+# add_executable(coding_demo)
+# target_sources(coding_demo PRIVATE
+#   coding_demo.cc)
 
 # Echo variables
 message(STATUS "Leveldb path - ${LEVELDB_PATH}")
