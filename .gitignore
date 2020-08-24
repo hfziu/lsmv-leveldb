@@ -40,6 +40,10 @@ understand/
 */.idea/
 */build/
 
+# VS Code
+*/.vscode/
+.vscode/
+
 # Sphinx
 _build/
 _static/
