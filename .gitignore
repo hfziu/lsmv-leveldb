@@ -39,6 +39,7 @@ understand/
 # JetBrains IDEs
 */.idea/
 */build/
+*/build-*/
 
 # VS Code
 */.vscode/

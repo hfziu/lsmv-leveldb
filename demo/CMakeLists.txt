@@ -16,7 +16,11 @@ check_library_exists(snappy snappy_compress "" HAVE_SNAPPY)
 check_library_exists(tcmalloc malloc "" HAVE_TCMALLOC)
 
 set(LEVELDB_PATH "${PROJECT_SOURCE_DIR}/../leveldb")
-set(LIBLEVELDB "${LEVELDB_PATH}/build/libleveldb.a")
+message(STATUS "LevelDB Path: ${LEVELDB_PATH}")
+find_library(LIBLEVELDB NAMES libleveldb.a
+             PATH_SUFFIXES ${LEVELDB_PATH} NO_DEFAULT_PATH)
+
+message(STATUS "LevelDB library path after first try: ${LIBLEVELDB}")
 
 # Find libleveldb
 # If ../leveldb/build/libleveldb.a exists, link it
