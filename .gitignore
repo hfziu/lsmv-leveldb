@@ -39,3 +39,8 @@ understand/
 # JetBrains IDEs
 */.idea/
 */build/
+
+# Sphinx
+_build/
+_static/
+_templates/
