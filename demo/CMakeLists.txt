@@ -17,10 +17,11 @@ check_library_exists(tcmalloc malloc "" HAVE_TCMALLOC)
 
 set(LEVELDB_PATH "${PROJECT_SOURCE_DIR}/../leveldb")
 message(STATUS "LevelDB Path: ${LEVELDB_PATH}")
-find_library(LIBLEVELDB NAMES libleveldb.a
-             PATH_SUFFIXES ${LEVELDB_PATH} NO_DEFAULT_PATH)
+#find_library(LIBLEVELDB NAMES libleveldb.a
+#             PATHS ${LEVELDB_PATH}/build NO_DEFAULT_PATH)
+set(LIBLEVELDB "${LEVELDB_PATH}/build/libleveldb.a")
 
-message(STATUS "LevelDB library path after first try: ${LIBLEVELDB}")
+#message(STATUS "LevelDB library path after first try: ${LIBLEVELDB}")
 
 # Find libleveldb
 # If ../leveldb/build/libleveldb.a exists, link it
