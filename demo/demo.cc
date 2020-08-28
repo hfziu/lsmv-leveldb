@@ -9,6 +9,7 @@
 
 #include <cassert>
 #include "leveldb/db.h"
+#include "leveldb/comparator.h"
 #include "leveldb/write_batch.h"
 
 using namespace std;
@@ -20,7 +21,8 @@ int main(int argc, char **argv) {
   leveldb::DB *db;
   leveldb::Options options;
   options.create_if_missing = true;
-  // options.error_if_exists = true;
+  options.error_if_exists = true;
+  options.comparator = leveldb::IntegerComparator();
   leveldb::Status status = leveldb::DB::Open(options, "test_db", &db);
   assert(status.ok());
 
@@ -29,7 +31,7 @@ int main(int argc, char **argv) {
 
   // Put
   leveldb::WriteOptions writeOptions;
-  for (unsigned int i = 0; i < 100; ++i) {
+  for (unsigned int i = 0; i < 65535; ++i) {
     ostringstream keyStream;
     keyStream << i;
 
