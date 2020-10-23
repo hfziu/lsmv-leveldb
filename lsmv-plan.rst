@@ -8,6 +8,19 @@ Plan for modifying LevelDB into an LSMV-tree.
 Changes will be maintained in a newly created git branch in forked levelDB repository.
 
 
+Plan
+----
+
+MemTable
+^^^^^^^^
+
+From bottom to top:
+
+- Skip list: no need to modify. Encoded InternalKey data is inserted to Skip list 
+- MemTable: Add 
+
+
+
 Data Validity Model and Data Entry Format
 -----------------------------------------
 
@@ -39,6 +52,13 @@ Once the InternalKey and LookupKey structure has been changed, corresponding pro
 - Compaction
 - Recovery
 - Read (Query)
+
+
+MemTable
+^^^^^^^^
+
+- Arena (class used to allocate memory)
+- Skip-list: internal data structure in MemTable to store key/values.
 
 
 Functions we plan to support
