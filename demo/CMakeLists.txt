@@ -43,23 +43,52 @@ include_directories(
   "."
 )
 
-add_executable(demo)
-target_sources(demo PRIVATE
-  demo.cc)
-target_link_libraries(demo ${LIBLEVELDB})
-if(HAVE_CRC32C)
-  target_link_libraries(demo crc32c)
-endif(HAVE_CRC32C)
-if(HAVE_SNAPPY)
-  target_link_libraries(demo snappy)
-endif(HAVE_SNAPPY)
-if(HAVE_TCMALLOC)
-  target_link_libraries(demo tcmalloc)
-endif(HAVE_TCMALLOC)
+function(leveldb_demo demo_file)
+  get_filename_component(demo_file_name "${demo_file}" NAME_WE)
 
-# Needed by port_stdcxx.h
-find_package(Threads REQUIRED)
-target_link_libraries(demo Threads::Threads)
+  add_executable("${demo_file_name}")
+  target_sources("${demo_file_name}"
+    PRIVATE
+    "${demo_file}"
+  )
+
+  target_link_libraries("${demo_file_name}" ${LIBLEVELDB})
+  if(HAVE_CRC32C)
+    target_link_libraries("${demo_file_name}" crc32c)
+  endif(HAVE_CRC32C)
+  if(HAVE_SNAPPY)
+    target_link_libraries("${demo_file_name}" snappy)
+  endif(HAVE_SNAPPY)
+  if(HAVE_TCMALLOC)
+    target_link_libraries("${demo_file_name}" tcmalloc)
+  endif(HAVE_TCMALLOC)
+
+  # Needed by port_stdcxx.h
+  find_package(Threads REQUIRED)
+  target_link_libraries("${demo_file_name}" Threads::Threads)
+  
+endfunction(leveldb_demo)
+
+leveldb_demo("demo.cc")
+leveldb_demo("mv_demo.cc")
+
+# add_executable(demo)
+# target_sources(demo PRIVATE
+#   demo.cc)
+# target_link_libraries(demo ${LIBLEVELDB})
+# if(HAVE_CRC32C)
+#   target_link_libraries(demo crc32c)
+# endif(HAVE_CRC32C)
+# if(HAVE_SNAPPY)
+#   target_link_libraries(demo snappy)
+# endif(HAVE_SNAPPY)
+# if(HAVE_TCMALLOC)
+#   target_link_libraries(demo tcmalloc)
+# endif(HAVE_TCMALLOC)
+
+# # Needed by port_stdcxx.h
+# find_package(Threads REQUIRED)
+# target_link_libraries(demo Threads::Threads)
 
 # Coding
 # add_executable(coding_demo)
@@ -71,4 +100,4 @@ message(STATUS "Leveldb path - ${LEVELDB_PATH}")
 message(STATUS "Included leveldb headers directory - ${HEADER_LEVELDB}/leveldb")
 message(STATUS "Linked leveldb library - ${LIBLEVELDB}")
 
-add_executable(slice_compare slice_compare.cc)
+# add_executable(slice_compare slice_compare.cc)
