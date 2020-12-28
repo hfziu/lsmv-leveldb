@@ -49,3 +49,6 @@ understand/
 _build/
 _static/
 _templates/
+
+# Doxygen
+doxygen/
