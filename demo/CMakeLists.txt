@@ -100,4 +100,7 @@ message(STATUS "Leveldb path - ${LEVELDB_PATH}")
 message(STATUS "Included leveldb headers directory - ${HEADER_LEVELDB}/leveldb")
 message(STATUS "Linked leveldb library - ${LIBLEVELDB}")
 
-# add_executable(slice_compare slice_compare.cc)
+add_executable(time_t time_t.cc)
+add_executable(coding_demo
+               coding_demo.cc
+               util/coding.h)

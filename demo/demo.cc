@@ -14,15 +14,16 @@
 
 using namespace std;
 
-int main(int argc, char **argv) {
-  auto time_ui = static_cast<unsigned int>( time(nullptr));
+int main(int argc, char **argv)
+{
+  auto time_ui = static_cast<unsigned int>(time(nullptr));
   srand(time_ui);
 
   leveldb::DB *db;
   leveldb::Options options;
   options.create_if_missing = true;
   options.error_if_exists = true;
-  options.comparator = leveldb::IntegerComparator();
+  // options.comparator = leveldb::IntegerComparator();
   leveldb::Status status = leveldb::DB::Open(options, "test_db", &db);
   assert(status.ok());
 
@@ -31,7 +32,8 @@ int main(int argc, char **argv) {
 
   // Put
   leveldb::WriteOptions writeOptions;
-  for (unsigned int i = 0; i < 65535; ++i) {
+  for (unsigned int i = 0; i < 65535; ++i)
+  {
     ostringstream keyStream;
     keyStream << i;
 
@@ -44,7 +46,8 @@ int main(int argc, char **argv) {
   // Iterator
   leveldb::Iterator *it = db->NewIterator(leveldb::ReadOptions());
 
-  for (it->SeekToFirst(); it->Valid(); it->Next()) {
+  for (it->SeekToFirst(); it->Valid(); it->Next())
+  {
     cout << it->key().ToString() << " : " << it->value().ToString() << endl;
   }
 
@@ -54,7 +57,8 @@ int main(int argc, char **argv) {
 
   leveldb::Status s = db->Get(leveldb::ReadOptions(), key1, &value);
 
-  if (s.ok()) {
+  if (s.ok())
+  {
     cout << "Required Key: " << key1 << ", ";
     cout << "Retrieved value: " << value << endl;
   }
